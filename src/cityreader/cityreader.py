@@ -1,6 +1,11 @@
+import csv
 # Create a class to hold a city location. Call the class "City". It should have
 # fields for name, lat and lon (representing latitude and longitude).
-
+class City:
+  def __init__(self, name, lat, lon):
+    self.name = name
+    self.lat = lat
+    self.lon = lon
 
 # We have a collection of US cities with population over 750,000 stored in the
 # file "cities.csv". (CSV stands for "comma-separated values".)
@@ -21,14 +26,21 @@ def cityreader(cities=[]):
   # Ensure that the lat and lon valuse are all floats
   # For each city record, create a new City instance and add it to the 
   # `cities` list
-    
+    with open("cities.csv", "r") as csv_file:
+        csv_reader = csv.DictReader(csv_file)
+        for row in csv_reader:
+            city = City(row['city'], float(row['lat']), float(row['lng']))
+            cities.append(city)
+    csv_file.close()
+
     return cities
 
 cityreader(cities)
+print(len(cities))
 
 # Print the list of cities (name, lat, lon), 1 record per line.
 for c in cities:
-    print(c)
+    print(f'{c.name} \n {c.lat} \n {c.lon}')
 
 # STRETCH GOAL!
 #
@@ -61,11 +73,31 @@ for c in cities:
 
 # TODO Get latitude and longitude values from the user
 
+turn1 = input('Enter lat1,lon1: ')
+inList = [float(n) for n in turn1.split(',')]  
+point1 = tuple(inList)
+print(point1)
+
+turn2 = input('Enter lat2,lon2: ')
+inList2 = [float(n) for n in turn2.split(',')]  
+point2 = tuple(inList2)
+print(point2)
+
+
 def cityreader_stretch(lat1, lon1, lat2, lon2, cities=[]):
   # within will hold the cities that fall within the specified region
   within = []
   
-  # Go through each city and check to see if it falls within 
-  # the specified coordinates.
-
+  
+  bottom = min(lat1, lat2)
+  max_lat = max(lat1, lat2)
+  print(f"Bottom {bottom}")
+  top = min(lon1, lon2)
+  max_lon = max(lon1, lon2)
+  print(f"Top {top}")
+  for city in cities:
+      if float(city.lat) >= float(bottom) and float(city.lat) <= max_lat and float(city.lon) >= float(top) and float(
+              city.lon) <= max_lon:
+          within.append(city)
+          print(f"Name: {city.name}, Lat: {city.lat} Long: {city.lon}")
   return within
